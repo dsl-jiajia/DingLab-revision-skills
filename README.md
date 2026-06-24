@@ -3,6 +3,345 @@
 ## **20260623**:本次上传revision_skills_20260623.tar.gz.enc内含有2个skill：revision-response-drafter和revision-final-auditor
 revision-response-drafter用于生成修回框架，可以提供题目类型/相关分析建议/文献参考建议和语言框架。
 
+## **20260624**:本次更新了一下该skills所需的环境和解密解压方法👀👀👀📒
+一、准备工作：
+Codex Desktop/CLI等智能体模型
+Python >= 3.10
+PyMuPDF
+pypdf
+pdfplumber
+OpenSSL
+Internet access for literature verification（需要文献背书时需要联网）
+Local read/write permission
+Encrypted lab database for strict private-lab mode（存放于平台电脑
+
+
+二、解压方法说明书：
+```text
+revision_skills_YYYYMMDD.tar.gz.enc
+```
+
+该文件包含两层：
+
+1. `.enc`：OpenSSL 加密层；
+2. `.tar.gz`：压缩归档层。
+
+因此，必须按照以下顺序操作：
+
+```text
+.tar.gz.enc -> OpenSSL 解密 -> .tar.gz -> tar/7-Zip 解压
+```
+## 1. 自动解压脚本
+`private_vault.py`为自动解压脚本，已经上传👌
+
+## 2. 加密参数
+
+发布包使用：
+
+```text
+AES-256-CBC
+PBKDF2
+200000 iterations
+SHA-256
+```
+
+直接使用 OpenSSL 时，以下参数必须保持一致：
+
+```text
+-aes-256-cbc -pbkdf2 -iter 200000 -md sha256
+```
+# macOS 方法
+
+## 3. macOS 环境准备
+
+打开“终端 Terminal”，检查 Python、tar 和 OpenSSL：
+
+```bash
+python3 --version
+tar --version
+openssl version
+```
+
+Python 仅在使用 `private_vault.py` 时需要，建议 Python 3.10 或更高版本。
+
+macOS 系统自带的 `openssl` 可能实际是较旧的 LibreSSL，并不一定支持当前 PBKDF2 参数。推荐使用 Homebrew 安装 OpenSSL 3：
+
+```bash
+brew install openssl@3
+```
+
+检查 Homebrew OpenSSL：
+
+```bash
+"$(brew --prefix openssl@3)/bin/openssl" version
+```
+
+如需让 `private_vault.py` 找到 OpenSSL 3，在当前终端执行：
+
+```bash
+export PATH="$(brew --prefix openssl@3)/bin:$PATH"
+```
+
+再次检查：
+
+```bash
+openssl version
+```
+
+应显示 OpenSSL 3.x，而不是不支持 `-pbkdf2` 的旧版本。
+
+如果电脑尚未安装 Homebrew，需要先由成员按照实验室或单位的软件安装规范安装 Homebrew，再执行上述命令。
+
+## 4. macOS 方法一：直接使用 OpenSSL
+
+进入下载目录：
+
+```bash
+cd "$HOME/Downloads"
+```
+
+确认加密包存在：
+
+```bash
+ls -lh revision_skills_*.tar.gz.enc
+```
+
+使用 Homebrew OpenSSL 3 解密：
+
+```bash
+"$(brew --prefix openssl@3)/bin/openssl" enc \
+  -d -aes-256-cbc -pbkdf2 -iter 200000 -md sha256 \
+  -in "revision_skills_YYYYMMDD.tar.gz.enc" \
+  -out "revision_skills.tar.gz"
+```
+
+将 `YYYYMMDD` 替换成实际日期。终端要求输入密码时，输入内容不会显示，这是正常现象。
+
+确认解密文件存在：
+
+```bash
+ls -lh "revision_skills.tar.gz"
+```
+
+创建输出目录并解压：
+
+```bash
+mkdir -p "revision_skills_extracted"
+
+tar -xzf "revision_skills.tar.gz" \
+  -C "revision_skills_extracted"
+```
+
+检查结果：
+
+```bash
+find "revision_skills_extracted" -maxdepth 3 -type f
+```
+
+也可以双击已经解密得到的 `revision_skills.tar.gz`，使用 macOS 归档实用工具解压。不要双击原始 `.tar.gz.enc` 文件。
+
+## 5. macOS 方法二：使用自动解密脚本
+
+确保以下文件位于同一目录：
+
+```text
+revision_skills_YYYYMMDD.tar.gz.enc
+private_vault.py
+README_macOS_Windows_decryption_installation.md
+```
+
+进入目录并启用 OpenSSL 3：
+
+```bash
+cd "$HOME/Downloads"
+export PATH="$(brew --prefix openssl@3)/bin:$PATH"
+```
+
+执行：
+
+```bash
+python3 private_vault.py decrypt \
+  --archive "revision_skills_YYYYMMDD.tar.gz.enc" \
+  --out "revision_skills_extracted"
+```
+
+终端会提示：
+
+```text
+Vault passphrase:
+```
+
+输入密码时不会显示字符。该脚本会自动完成解密和安全解压。
+
+如果输出目录已经存在且不是空目录，建议换一个新的目录。只有确认可以覆盖现有文件时才使用：
+
+```bash
+python3 private_vault.py decrypt \
+  --archive "revision_skills_YYYYMMDD.tar.gz.enc" \
+  --out "revision_skills_extracted" \
+  --overwrite
+```
+
+
+
+---
+
+# Windows 方法
+
+## 6. Windows 环境准备
+
+使用 Windows 10/11 的 PowerShell。
+
+检查 OpenSSL：
+
+```powershell
+openssl version
+```
+
+建议使用支持以下参数的 OpenSSL 3.x：
+
+```powershell
+openssl enc -help
+```
+
+帮助信息中应能看到 `-pbkdf2` 和 `-iter`。
+
+如果提示 `openssl is not recognized`，需要先安装 OpenSSL，并将 `openssl.exe` 所在目录加入系统 `PATH`。安装完成后，关闭并重新打开 PowerShell。
+
+使用自动解密脚本时，还需要 Python 3.10 或更高版本：
+
+```powershell
+python --version
+```
+
+如果 `python` 不可用，可尝试：
+
+```powershell
+py --version
+```
+
+## 7. Windows 方法一：直接使用 OpenSSL
+
+进入下载目录：
+
+```powershell
+cd "$HOME\Downloads"
+```
+
+确认文件存在：
+
+```powershell
+Get-ChildItem ".\revision_skills_*.tar.gz.enc"
+```
+
+解密：
+
+```powershell
+openssl enc -d -aes-256-cbc -pbkdf2 -iter 200000 -md sha256 `
+  -in ".\revision_skills_YYYYMMDD.tar.gz.enc" `
+  -out ".\revision_skills.tar.gz"
+```
+
+将 `YYYYMMDD` 替换成实际日期。输入密码时屏幕可能不显示字符，这是正常现象。
+
+确认解密文件存在：
+
+```powershell
+Get-Item ".\revision_skills.tar.gz"
+```
+
+使用 Windows 自带的 tar 解压：
+
+```powershell
+New-Item -ItemType Directory -Force `
+  ".\revision_skills_extracted"
+
+tar -xzf ".\revision_skills.tar.gz" `
+  -C ".\revision_skills_extracted"
+```
+
+检查结果：
+
+```powershell
+Get-ChildItem ".\revision_skills_extracted" `
+  -Recurse -Depth 3
+```
+
+也可以使用 7-Zip 打开已经解密得到的 `revision_skills.tar.gz`。7-Zip 可能需要先解开 `.gz`，再解开其中的 `.tar`。
+
+## 8. Windows 方法二：使用自动解密脚本
+
+确保以下文件位于同一目录：
+
+```text
+revision_skills_YYYYMMDD.tar.gz.enc
+private_vault.py
+README_macOS_Windows_decryption_installation.md
+```
+
+进入目录：
+
+```powershell
+cd "$HOME\Downloads"
+```
+
+使用 `python`：
+
+```powershell
+python .\private_vault.py decrypt `
+  --archive ".\revision_skills_YYYYMMDD.tar.gz.enc" `
+  --out ".\revision_skills_extracted"
+```
+
+或使用 Windows Python Launcher：
+
+```powershell
+py .\private_vault.py decrypt `
+  --archive ".\revision_skills_YYYYMMDD.tar.gz.enc" `
+  --out ".\revision_skills_extracted"
+```
+
+终端会提示：
+
+```text
+Vault passphrase:
+```
+
+输入密码时不会显示字符。脚本会自动完成解密和安全解压。
+
+如果输出目录已经存在且不是空目录，建议换一个新的目录。只有确认可以覆盖现有文件时才使用：
+
+```powershell
+python .\private_vault.py decrypt `
+  --archive ".\revision_skills_YYYYMMDD.tar.gz.enc" `
+  --out ".\revision_skills_extracted" `
+  --overwrite
+```
+
+
+---
+
+# 通用检查与安全说明
+
+## 9. 解压后的正确结构
+
+正常情况下应找到：
+
+```text
+revision-response-drafter/
+  SKILL.md
+  agents/
+  references/
+  scripts/
+
+revision-final-auditor/
+  SKILL.md
+  agents/
+  references/
+  scripts/
+```
+
+
 -------------
 # Revision Response Drafter 使用说明
 
