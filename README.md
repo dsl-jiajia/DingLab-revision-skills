@@ -115,7 +115,7 @@ ls -lh revision_skills_*.tar.gz.enc
   -out "revision_skills.tar.gz"
 ```
 
-将 `YYYYMMDD` 替换成实际日期。终端要求输入密码时，输入内容不会显示，这是正常现象。
+将 `YYYYMMDD` 替换成实际日期和版本（即文件名）。终端要求输入密码时，输入内容不会显示，这是正常现象。
 
 确认解密文件存在：
 
