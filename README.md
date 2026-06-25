@@ -5,14 +5,23 @@ revision-response-drafter用于生成修回框架，可以提供题目类型/相
 
 ## **20260624**:本次更新了一下该skills所需的环境和解密解压方法👀👀👀📒
 一、准备工作：
+
 Codex Desktop/CLI等智能体模型
+
 Python >= 3.10
+
 PyMuPDF
+
 pypdf
+
 pdfplumber
+
 OpenSSL
+
 Internet access for literature verification（需要文献背书时需要联网）
+
 Local read/write permission
+
 Encrypted lab database for strict private-lab mode（存放于平台电脑
 
 
