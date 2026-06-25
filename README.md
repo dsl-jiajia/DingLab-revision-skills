@@ -1,28 +1,33 @@
 # DingLab-revision-skills：
 ## skills的使用效果也取决于所使用模型的能力 ##
+## **20260625**:本次更新一下使用的注意事项：
+1. 想要使用文献调研的功能，需要先联网，让智能体自己/使用者安装相关文献检索skills（具备该功能的skills有很多）
+2. prompt指令越详细越好，智能体会偷懒，这个问题目前还没有除了给出详细指令“鞭打”它以外更好的方法
+3. 给智能体的相关材料（menu，数据，图表等等）也是越详细丰富越好，同时建议大家在本地进行使用，联网或许会有泄密问题（或许或许或许）
+4. 一道题一道题输出比一次性给一整个文档/十几几十道题目效果要更好
 ## **20260623**:本次上传revision_skills_20260623.tar.gz.enc内含有2个skill：revision-response-drafter和revision-final-auditor
 revision-response-drafter用于生成修回框架，可以提供题目类型/相关分析建议/文献参考建议和语言框架。
 
 ## **20260624**:本次更新了一下该skills所需的环境和解密解压方法👀👀👀📒
 一、准备工作：
 
-Codex Desktop/CLI等智能体模型
+Codex Desktop/CLI等智能体模型  
 
-Python >= 3.10
+Python >= 3.10 
 
-PyMuPDF
+PyMuPDF  
 
-pypdf
+pypdf  
 
-pdfplumber
+pdfplumber  
 
-OpenSSL
+OpenSSL  
 
-Internet access for literature verification（需要文献背书时需要联网）
+Internet access for literature verification（需要文献背书时需要联网）  
 
-Local read/write permission
+Local read/write permission  
 
-Encrypted lab database for strict private-lab mode（存放于平台电脑
+Encrypted lab database for strict private-lab mode（存放于平台电脑Anydesk（475开头）的电脑"E:\Document Dataset"）
 
 
 二、解压方法说明书：
